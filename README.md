@@ -34,7 +34,7 @@ Gabby takes a different approach to how it combines game scripting and dialogue 
 
 Example
 --------
-```json <!-- can't do proper highlighting, this at least partially works -->
+```
 gabby 0.2
 language EN
 

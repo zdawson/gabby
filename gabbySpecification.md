@@ -42,7 +42,7 @@ Valid metadata:
 - Must only be declared once per file.
 
 Usage:
-```json
+```
 gabby 0.2
 language EN
 ```
@@ -57,7 +57,7 @@ There are no multiline comments. Use multiple single-line comments instead.
 Comments can be written at any part of a line, and everything up until the comment will be parsed by the dialogue engine.
 
 Usage:
-```json
+```
 // This is a comment.
 ```
 
@@ -89,7 +89,7 @@ Usage:
 ```
 
 Example:
-```json
+```
 gabby 0.2
 language EN
 
@@ -130,13 +130,13 @@ Valid dialogue lines:
 - May have an empty dialogue body, in which case the speaking character changes without prompting the player
 
 Usage:
-```json
+```
 (Character) A line of dialogue.
 - A line of dialogue.
 ```
 
 Example:
-```json
+```
 gabby 0.2
 language EN
 
@@ -166,7 +166,7 @@ Usage:
 ```
 
 Example:
-```json
+```
 gabby 0.2
 language EN
 
@@ -193,7 +193,7 @@ Usage:
 ```
 
 Example:
-```json
+```
 gabby 0.2
 language EN
 
@@ -241,7 +241,7 @@ Usage:
 ```
 
 Example:
-```json
+```
 gabby 0.2
 language EN
 
@@ -284,7 +284,7 @@ Ending Dialogue
 The `end` keyword can be used anywhere within a dialogue block to end the dialogue. Lines after it will be ignored, and lines after it in the same dialogue block are inaccessible.
 
 Example:
-```json
+```
 gabby 0.2
 language EN
 
@@ -318,13 +318,13 @@ Valid actions:
 - May contain whitespace within parameters, which will be preserved
 
 Usage:
-```json
+```
 > actionName(parameter1, parameter2)
 > actionName( parameter 1, parameter 2 ) // The parameters here will be parsed as `parameter 1`, `parameter 2`
 ```
 
 Example:
-```json
+```
 gabby 0.2
 language EN
 
@@ -380,7 +380,7 @@ Valid conditionals:
 - May have duplicate else if clauses, in which case the first one is used.
 
 Example:
-```json
+```
 gabby 0.2
 language EN
 
@@ -419,7 +419,7 @@ Valid tags:
 - May have whitespace within a tag, key, or value, which will be preserved.
 
 Usage:
-```json
+```
 <key:value, anotherTag> // Dialogue definitions can be tagged
 [Character.Dialogue]
     <tag> // Lines in a dialogue can be tagged
@@ -435,7 +435,7 @@ Usage:
 ```
 
 Example:
-```json
+```
 gabby 0.2
 language EN
 
@@ -486,7 +486,7 @@ Usage:
 ```
 
 Example:
-```json
+```
 gabby 0.2
 language EN
 
@@ -496,5 +496,3 @@ language EN
     -                    Just use dialogue line tags!
     (Gabby, very happy)  It keeps the script nice and tidy!
 ```
-
-<center><img align="center" style="padding-top:48px" src="images/GabbyLogo.png" alt="Gabby Logo"></center>

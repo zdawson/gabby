@@ -11,7 +11,6 @@ This specification is intended to cover every supported feature of the language 
 This is **version 0.2.0** of the spec, for **Gabby v0.2**. 
 
 ## Table of Contents <!-- omit in toc -->
---------------------
 - [Gabby Metadata](#gabby-metadata)
 - [Comments](#comments)
 - [Dialogue](#dialogue)

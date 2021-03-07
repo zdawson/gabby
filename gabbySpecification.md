@@ -1,14 +1,8 @@
-Gabby Dialogue v0.2 <!-- omit in toc -->
-===================
-<img align="left" style="padding-right:16px" src="images/GabbyLogo.png" alt="Gabby Logo">
+# Gabby Specification v0.2.0 <!-- omit in toc -->
 
-<span style="font-size:18px">
-Gabby is a dialogue scripting language intended for use in games and visual novels.  
-</span>
+This is the language specification for **Gabby v0.2**. This is **version 0.2.0** of the specification.
 
-This specification is intended to cover every supported feature of the language in detail. Dialogue engine implementations should support everything as defined here to be considered a standard implementation. 
-
-This is **version 0.2.0** of the spec, for **Gabby v0.2**. 
+This document specifies how the language and its features should function. Dialogue engines / interpreters should refer to this to ensure their behaviours are compliant the standard.
 
 ## Table of Contents <!-- omit in toc -->
 - [Gabby Metadata](#gabby-metadata)
@@ -31,13 +25,13 @@ This is **version 0.2.0** of the spec, for **Gabby v0.2**.
 Gabby Metadata
 -----------------
 
-The start of a Gabby file may optionally contain the following metadata:  
-- version information, specified by the keyword `gabby` followed by the version number.
-- language, specified by the keyword `language` followed by any language identifier.  
+The start of a Gabby file may optionally contain the following metadata:
+- Gabby version identifier, specified by the keyword `gabby` followed by the version number.
+- Gabby language identifier, specified by the keyword `language` followed by any language identifier.
 
 Valid metadata:
 - Must be at the start of a file, ignoring comments and whitespace.
-- Must begin with a valid keyword, `gabby` or `language`.
+- Must begin with one of the above keywords.
 - Must only be declared once per file.
 
 Usage:
@@ -50,21 +44,22 @@ language EN
 Comments
 --------
 
-Comments are written with two forward slashes `//`. Any characters can follow this and will be ignored by the dialogue engine.  
-There are no multiline comments. Use multiple single-line comments instead.
+Comments are written with two forward slashes `//`. Any text following this will be ignored by the dialogue engine.
+Multiline comments are not supported - start each line with `//`.
 
 Comments can be written at any part of a line, and everything up until the comment will be parsed by the dialogue engine.
 
 Usage:
 ```
 // This is a comment.
+- Dialogue line. // This is another comment.
 ```
 
 ----------------------
 Dialogue
 --------
 
-A Gabby file defines one or more dialogues.  
+A Gabby file defines one or more dialogues.
 Dialogues are conversations between one or more characters. Every dialogue has a unique name, and is associated with a single character that "owns" the dialogue. This character can be an NPC being spoken to, an object being interacted with, a narrator, the player, or anything else the game wants.
 
 Dialogues are written starting with a dialogue definition. Dialogue definitions are designated by square brackets `[]`, containing the character name and dialogue name separated by a period `.`. The dialogue engine can then use the character name and dialogue name to locate dialogues for use by the game.
@@ -100,9 +95,9 @@ language EN
 Lines
 --------------
 
-Dialogues contain any number of lines. This is where you can add content to your conversations.  
-Lines can be either player-facing or internal to the dialogue engine. Most lines will be dialogue lines
-spoken by an NPC to the player, but could also be options, actions, jumps, etc. as defined elsewhere in this spec.
+Dialogues contain any number of lines. This is where you can add content to your dialogues.
+
+Lines are typically either spoken dialogue or instructions to the dialogue engine, such as actions or conditionals. In some cases, the line should not be displayed.
 
 Lines always begin with a unique designator, used by the dialogue engine to define how to handle a line when executing dialogue.
 
@@ -116,11 +111,11 @@ Valid lines:
 Dialogue Lines
 --------------
 
+Dialogue lines are lines of text meant to be displayed to the player as part of the dialogue.
+
 Dialogue lines use one of the following designators:
 - `(Character Name)` The name of the speaking character, written explicitly and surrounded by parentheses `()`.
 - `-` A single dash, implicitly referring to the last character to speak, or to the character who owns the dialogue if no character has been explicitly named.
-
-Following this, the dialogue text is written. The text can also be left blank, changing the current speaker for the following lines. An empty dialogue box will not present a prompt to the player, it will be skipped internally by the dialogue engine.
 
 Valid dialogue lines:
 - Must be a valid line.
@@ -145,18 +140,16 @@ language EN
     - It's good to meet you! // The character speaking here is Kay
 ```
 
-Implementation Notes  
-The dialogue engine:
-- Must display the dialogue until the game signals the engine to advance to the next line.
-- Must provide the game with the correct character for lines with implicitly referenced characters.
-- Must properly update the speaking character even with blank lines
-- Must not trigger an empty dialogue box for lines containing only whitespace
+Implementation Notes
+
+- Should pause dialogue execution until the game signals the engine to advance to the next line.
+- Should transparently track the active character, so dialogue lines that don't explicitly specify the character are handled the same way as those that do
 
 ----------------------
 Appending Dialogue
 ------------------
 
-Additional text can be displayed without clearing the current dialogue line by appending to it.  
+Additional text can be displayed without clearing the current dialogue line by appending to it.
 Appended lines are designated by `+`.
 
 Usage:
@@ -174,19 +167,19 @@ language EN
     + Can I help you? // This text appears as part of the same dialogue line after the player advances.
 ```
 
-Implementation Notes  
-The dialogue engine:
+Implementation Notes
+
 - Must treat this as a regular line when it appears as the first line of dialogue.
-- Must treat this as a separate event than dialogue lines, in order to properly allow support for animating text or other game specific behaviour.
+- Should allow games to handle this separate from regular dialogue lines, in order to properly allow support for animating text or other game specific behaviour.
 
 ----------------------
 Narrated Dialogue
 ----------------------------------
 
-Narrated dialogue can be used in cases where you don't want any character to speak.  
-Narrated lines are designated by `*`. 
+Narrated dialogue can be used in cases where you don't want any character to speak.
+Narrated lines are designated by `*`.
 
-Usage: 
+Usage:
 ```
 * This line is not spoken by a character.
 ```
@@ -205,10 +198,10 @@ language EN
 Dialogue Blocks
 ---------------
 
-Dialogue blocks are logical "chunks" of dialogue, where lines within the block flow from beginning to end.  
+Dialogue blocks are logical "chunks" of dialogue, where lines within the block flow from beginning to end.
 In a simple dialogue, there is a single dialogue block. More complex dialogues with options introduce additional dialogue blocks.
 
-Dialogue blocks are defined by indentation. Thus, it's important that all lines within a block are indented the same way, or you will get unexpected results.  
+Dialogue blocks are defined by indentation. Thus, it's important that all lines within a block are indented the same way, or you will get unexpected results.
 Specifically, any time indentation falls behind the parent block, the inner block ends, so bad indentation may cause you to inadvertently close a block.
 
 You do not create dialogue blocks yourself, only through special lines like options.
@@ -219,7 +212,7 @@ When all lines within a dialogue block are executed, the dialogue engine returns
 Options
 -------
 
-Options are used to prompt the player to make a choice, creating a branch the dialogue tree.  
+Options are used to prompt the player to make a choice, creating a branch the dialogue tree.
 They are designated by `:`, with each individual option being given its own line.
 
 After each designated option, a new dialogue block is started. This block must be indented beyond the option line. The block ends
@@ -263,18 +256,23 @@ language EN
 ```
 
 In the above example, when the player selects `Yes`, the flow will be as follows:
-> _Writing branching dialogue should be easy, don't you think?_  
-> **\> Yes**  
-> _I think so too!_  
-> _The easier it is, the more people will do it!_  
-> _I'm going to add lots of choices to my games._  
 
-Implementation Notes  
-The dialogue engine:
-- Must present all options to the game to be displayed for selection.
-- Must wait for a selection to be provided from the game before advancing.
+> _Writing branching dialogue should be easy, don't you think?_
+>
+> **\> Yes**
+>
+> _I think so too!_
+>
+> _The easier it is, the more people will do it!_
+>
+> _I'm going to add lots of choices to my games._
+
+Implementation Notes
+
+- Must present all adjacent option lines as one set of options to choose from.
+- Must wait for a selection to be provided from the game before advancing to the next line.
 - Must not present the options themselves as dialogue, only as entries in an options list to be selected from.
-- Must correctly handle dialogue blocks and returning to the parent block when completing a nested block.
+- Must return to the parent block when completing a nested block.
 
 ----------------------
 Ending Dialogue
@@ -297,16 +295,16 @@ language EN
     end
 ```
 
-Implementation Notes  
-The dialogue engine:
-- Must not close a dialogue block when end is reached. Lines after it are included in the dialogue block, even though they're inaccessible.
-    - This is to avoid confusion when ending inner blocks early with extra lines following the end keyword.
+Implementation Notes
+
+- Must not continue execution after end is reached, even if there are lines following it
+- Must end the entire dialogue, not just the current block
 
 ----------------------
 Actions
 -------
 
-Actions are callbacks that the game can handle, useful for setting state or triggering events. They are not displayed to the player, just executed by the dialogue engine and then skipped over.  
+Actions are callbacks that the game can handle, useful for setting state or triggering events. They are not displayed to the player, just executed by the dialogue engine and then skipped over.
 Actions are designated by `>`, followed by the action name and the parameters to the action surrounded by `()` and separated by `,`.
 
 Valid actions:
@@ -328,15 +326,15 @@ gabby 0.2
 language EN
 
 [Gabby.ActionExample]
-    > playSound("introduction.ogg")
-    > set("gabby.introduced", true)
+    > playSound(introduction.ogg)
+    > set(gabby.introduced, true)
     - Oh, hey! I'm Gabby.
     - Take this!
-    > giveItem("gold", 50)
+    > giveItem(gold, 50)
 ```
 
-Implementation Notes  
-The dialogue engine:
+Implementation Notes
+
 - Must send the event and parameters to the game to be handled
 - Must execute the next line automatically
 - Must parse quoted strings as strings, trimming the quotes but preserving all whitespace
@@ -358,8 +356,8 @@ Usage:
 >> Character.DialogueName
 ```
 
-Implementation Notes  
-The dialogue engine:
+Implementation Notes
+
 - Must automatically execute the jump and continue to the next line, not waiting for a signal to advance.
 - Must support jumping to any dialogue in the same file.
 - Must gracefully handle missing dialogue references and notify the game to handle it.
@@ -412,7 +410,7 @@ Valid tags:
 - Must be enclosed with `<>`.
 - Must be placed immediately before a line or dialogue definition, with only whitespace, newlines, or comments separating them.
 - Must be written on a single line.
-- May contain any number of comma separated values, or key-value pairs separated by `:`.
+- May contain any number of comma separated values and key-value pairs separated by `:`.
 - May have whitespace surrounding tags, which will be trimmed.
 - May have whitespace surrounding keys and values, which will be trimmed.
 - May have whitespace within a tag, key, or value, which will be preserved.
@@ -495,3 +493,5 @@ language EN
     -                    Just use dialogue line tags!
     (Gabby, very happy)  It keeps the script nice and tidy!
 ```
+
+When tags are added both on their own line and inline, they are combined into a single set.

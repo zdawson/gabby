@@ -1,86 +1,145 @@
-Gabby Dialogue Language Specification
-=====================================
-<img align="left" style="padding-right:16px" src="images/GabbyLogo.png" alt="Gabby Logo">
+# Gabby - A Dialogue Language for Games
+<img align="left" style="padding-right:16px" src="images/GabbyBold64.png" alt="Gabby Icon">
 
 <span style="font-size:18px">
-Gabby is a dialogue scripting language intended for use in games and visual novels.  
-</span>
 
-This is Gabby version **0.2**. This specification is still in development.
+[**Play the sample in your browser on itch.io here!**](https://potassium-k.itch.io/gabby)
+
+Gabby is a language made for game dialogue. It makes it easy to build games and visual novels with dialogue at their core.
+
+</span>
 
 <br>
 
-## [View the specification here.](gabbySpecification.md)
+This is Gabby version **0.2**. This specification is still in development.
 
-### Also see:
-- [gabby-dialogue-engine](https://github.com/zdawson/gabby-dialogue-engine): A Unity C# implementation of the language.
-- [gabby-dialogue](https://github.com/zdawson/gabby-dialogue): A Unity project demonstrating usage of the dialogue engine.
-- [gabby-dialogue-vscode](https://github.com/zdawson/gabby-dialogue-vscode): Syntax highlighting for VSCode.
+## [**View the specification here.**](gabbySpecification.md)
 
-Overview & Goals
-----------------
+<br>
 
-Gabby was created to make it easy to write rich, branching dialogue for games. Writing dialogue with Gabby should feel like you're writing a story, allowing you to focus on the content of your dialogue. The intent is to provide a natural way of writing so that any markup is minimal and unobstructive, and the barrier to entry for learning the language is as small as possible.
+## What is Gabby?
 
-The key goals of Gabby are:
-- To have a simple and concise syntax with a minimal footprint or boilerplate
-- To look more like a script or story than code or a data format
-- To be quickly understood by writers who don't program, and comfortable to use
-- To allow the dialogue scripts to drive the flow of dialogue, including player choices, triggering game events, and checking conditions
-- To make it easy to localize and offer more flexibility in changing dialogue structure for other languages
+Gabby is a dialogue language. It's essentially something in between a scripting language and a data format. It makes it easy to write rich, branching dialogue for games, without requiring any programming knowledge - so whether you're a writer or a programmer, you should feel at home working with Gabby.
 
-Gabby is inspired by [Ren'Py](https://www.renpy.org/), [Yarn Spinner](https://yarnspinner.dev/), and the many visual node-based dialogue editors available online.  
-Gabby takes a different approach to how it combines game scripting and dialogue scripting, offloading most of the logic to the game implementation. This is a tradeoff between power and readability, treating the dialogue files more like data to be interpreted than scripts to be executed. This allows Gabby to stay concise and highly readable.
+Gabby works by writing dialogue scripts that get parsed by an engine. These scripts tell the game what text to show, and can trigger events, branch with player input, check game conditions, and much more.
 
-Example
---------
+The main goals of Gabby are to:
+- Provide a simple and concise syntax for writing dialogue, reading like a manuscript instead of like code
+- Be readable without any knowledge of the language
+- Be easy and comfortable for writers to use, regardless of programming experience
+- Allow the dialogue scripts themselves to drive the flow of dialogue, instead of having to drive it from code
+- Make localization simple and flexible
+- Be compatible with any desired game engine (given that an interpreter is written for it)
+
+Working with Gabby is easy:
+
+```
+[Gabby.HelloWorld]
+
+    (Gabby) Hello, world!
+    -       ...
+    -       Hello?
+
+    (Kay)   Hey Gabby.
+
+    (Gabby) Hi!
+```
+
+You can get started with Gabby by checking out the [sample game.](https://github.com/zdawson/gabby-dialogue-sample) Documentation for working with the language will be added here in the future.
+
+<br>
+
+## Detailed Example
+
 ```
 gabby 0.2
 language EN
 
 // A simple dialogue between Gabby and Kay demonstrating some common features of the language.
-// Note that the usage of specific tags for portraits and text animation relies on game-side implementation and is not part of the language spec by default.
-// (The spec is designed with these use cases in mind, though)
-[Gabby.Simple Dialogue Example]
 
-    (Gabby, sad)    Kay, I'm tired of writing dialogue in Word and giving it to you to put into the game.
-    -               Should I learn to code? Should I write everything in this node-based editor?
-    -               I just want to write dialogue and see it in game...
+[Gabby.SimpleDialogueExample]
 
-    (Kay, shouting) No way!
-    <thinking> // Using a tag to change portraits, avoiding re-stating the character name over and over
-    +               There must be a better way... // This line appears in the same dialogue box, but after an additional input
-    -               Something that looks just like the scripts you send me, but just works...
-    <excited>
-    -               I've got it!
+    // You can use tags like sad or nervous to give your game more data about the line - useful to set portrait sprites, for example.
 
-    // Option 1: Kay names the language after their friend, Gabby
+    (Gabby, sad)    Kay, I'm tired of having to write all our dialogue in a Word document, and give it to you to integrate into the game.
+    -               Should I use a visual dialogue editor instead?
+
+    // '+' can be used to append a line without clearing the dialogue.
+
+    <nervous>
+    +               Or should I just learn to write code?
+
+
+    (Kay, shouting) No way!~
+    <disappointed>
+    +               There must be a better way...
+    (Kay, thinking) Something that looks just like the scripts you send me, but just works...
+    (Kay, excited)  Aha! I've got it!
+
+    // Here we let the player make a choice, either to have Kay name it after Gabby or after herself.
+    // These options (started with ':') are presented at the same time as a single choice to be made.
+
+    // Option 1: Kay names the language after Gabby
     : I'll make you a new language, and call it Gabby!~
 
         // These lines are indented to include them in this option's dialogue block. They're shown when this option is selected.
 
-        (Gabby, excited) That sounds great!
-        <style:slow> // Show each character of the next line with a long delay
+        (Gabby, excited) Yay!~ That sounds great!
         -                ...
+        +                ......
+        <happy>
         -                Is it ready yet?
 
-    // Option 2: Kay names the language after themself
+    // Option 2: Kay names the language after herself
     : I'll make you a new language, and call it Kay!~
 
         (Gabby, surprised) Oh! ...Yeah, that would be great!
-        <style:slow, thinking> // Multiple tags can be included, separated by commas
-        -                  ...
-        -                  Umm...
-        <smiling>
+        (Gabby, thinking)  ...
+        +                  Umm...
+        <happy>
         -                  Can you call it Gabby instead?
 
-        (Kay, excited)     Yeah, I like that way more!~
+        (Kay, excited)     Sure! That sounds way better.
 
-    // This is shown after either option
+    // This is shown after running either of the above options
+
+    // '*' can be used for narration
+
     * A long time passes...
-    (Kay, excited) It's ready! It's done! Let's make games!~
-    <shake>
+
+    (Kay, excited)   It's ready! It's done! Let's make games!~
+
+    // Using a tag to tell the game how to animate the text
+    <style: shaking>
     (Gabby, excited) FINALLY!~
 
-    end
+    (Kay, tired)     Yeah, finally...
+
+    (Gabby, excited) Now we can make games!
+
+    * Kay and Gabby get to work on their next project, excited to use their new language.
 ```
+
+<br>
+
+## License
+
+This project is released under the MIT license. [You can read about this license here.](https://choosealicense.com/licenses/mit/)
+
+<br>
+
+## Links
+
+- [Gabby](https://github.com/zdawson/gabby) - This repository. Learn how to write Gabby and check out the language spec.
+
+- [Gabby Dialogue Engine](https://github.com/zdawson/gabby-dialogue-engine) - A Gabby Dialogue Engine implementation for Unity. Clone this directly if you don't want the sample as well.
+
+- [Gabby Dialogue Sample](https://github.com/zdawson/gabby-dialogue-sample) - An interactive sample for the Gabby Dialogue Language made with Unity.
+
+- [VSCode Plugin](https://marketplace.visualstudio.com/vscode) - Syntax highlighting for Visual Studio Code.
+
+- [itch.io](https://potassium-k.itch.io/gabby) - The game sample, hosted on itch.io.
+
+<p align="center">
+  <img style="padding-top:64px" src="images/GabbyLogo.png" alt="Gabby Logo"/>
+</p>

@@ -136,7 +136,7 @@ This project is released under the MIT license. [You can read about this license
 
 - [Gabby Dialogue Sample](https://github.com/zdawson/gabby-dialogue-sample) - An interactive sample for the Gabby Dialogue Language made with Unity.
 
-- [VSCode Plugin](https://marketplace.visualstudio.com/vscode) - Syntax highlighting for Visual Studio Code.
+- [VSCode Plugin](https://marketplace.visualstudio.com/items?itemName=PotassiumK.gabby-lang) - Syntax highlighting for Visual Studio Code.
 
 - [itch.io](https://potassium-k.itch.io/gabby) - The game sample, hosted on itch.io.
 
